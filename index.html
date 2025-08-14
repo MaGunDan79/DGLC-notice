@@ -541,8 +541,11 @@
                 return;
             }
 
-            // 관리자 체크 (비밀번호: admin)
-            const isAdmin = password === 'admin';
+            // 관리자 체크 (비밀번호: admin 또는 ADMIN)
+            const isAdmin = password.toLowerCase() === 'admin';
+            
+            // 디버깅용 로그
+            console.log('로그인 시도:', { name, password, isAdmin });
 
             currentUser = {
                 name: name,
@@ -552,7 +555,12 @@
 
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             showApp();
-            showToast(`환영합니다, ${name}님!`);
+            
+            if (isAdmin) {
+                showToast(`🔐 관리자로 로그인했습니다, ${name}님!`);
+            } else {
+                showToast(`환영합니다, ${name}님!`);
+            }
         }
 
         // 로그아웃
@@ -571,9 +579,14 @@
             document.getElementById('appScreen').style.display = 'block';
             document.getElementById('currentUser').textContent = currentUser.name;
 
-            // 관리자 패널 표시
+            // 관리자 패널 표시 (디버깅 추가)
+            const adminPanel = document.getElementById('adminPanel');
             if (currentUser.isAdmin) {
-                document.getElementById('adminPanel').style.display = 'block';
+                console.log('관리자 권한 확인됨 - 패널 표시');
+                adminPanel.style.display = 'block';
+            } else {
+                console.log('일반 사용자 - 패널 숨김');
+                adminPanel.style.display = 'none';
             }
 
             // 알림 권한 확인
@@ -790,6 +803,49 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        }
+
+        // 외부 알림 발송 (카카오톡, Slack 등)
+        function sendExternalNotification(notice) {
+            // 옵션 1: 카카오워크 (회사에서 사용 중이라면)
+            // const KAKAO_WEBHOOK = '여기에_카카오워크_웹훅_URL_입력';
+            
+            // 옵션 2: Slack (회사에서 사용 중이라면)  
+            // const SLACK_WEBHOOK = '여기에_슬랙_웹훅_URL_입력';
+            
+            // 옵션 3: Discord (무료 추천)
+            const DISCORD_WEBHOOK = '여기에_디스코드_웹훅_URL_입력';
+            
+            // Discord 예시 (실제 사용 시 URL 교체 필요)
+            if (DISCORD_WEBHOOK && !DISCORD_WEBHOOK.includes('여기에')) {
+                fetch(DISCORD_WEBHOOK, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        content: `@everyone`,
+                        embeds: [{
+                            title: `📢 ${notice.title}`,
+                            description: notice.content,
+                            color: notice.priority === 'urgent' ? 15548997 : 
+                                   notice.priority === 'important' ? 16776960 : 5793266,
+                            author: {
+                                name: `작성자: ${notice.author}`
+                            },
+                            timestamp: new Date().toISOString(),
+                            footer: {
+                                text: '대구축산농협 공지사항'
+                            }
+                        }]
+                    })
+                }).then(() => {
+                    showToast('외부 알림 발송 완료!');
+                }).catch(err => {
+                    console.error('외부 알림 발송 실패:', err);
+                });
+            } else {
+                // 웹훅 URL이 설정되지 않은 경우 안내
+                alert('💡 외부 알림 설정 방법:\n\n1. Discord/Slack/카카오워크 중 선택\n2. 웹훅 URL 생성\n3. 코드의 WEBHOOK 변수에 URL 입력\n\n자세한 방법이 필요하시면 문의해주세요!');
+            }
         }
 
         // iOS 설치 안내
