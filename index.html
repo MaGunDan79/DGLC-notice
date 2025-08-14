@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>대구축산농협 공지사항</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIuuMgOq1rOy2leyCsOuGjey1kSDqs7XspIDsgqztla0iLAogICJzaG9ydF9uYW1lIjogIuuMgOy2leuGjey1kSDqs7XspIAiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmZmZmZmYiLAogICJ0aGVtZV9jb2xvciI6ICIjMjU2M2ViIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQUlBQUFBQ0FDQU1BQUFEcElXSWJBQUFBQkhOQ1NWUUlDQWdJZkFoa2lBQUFBQWx3U0ZsekFBQUFBUUFBQUFCbTVsYlRBQUFBRFhSRldIUlRiMlowZDJGeVpRQkJaRzlpWlNCSmJXRm5aVkpsWVdSNWNjbGxQQUFBQXl4cFZGaDBXRTFNT21OdmJTNWhaRzlpWlM1NGJYQUFBQUFBQUR3L2VIQmhZMnRsZENCaVpXZHBiajBpNzd1L0lpQnBaRDBpVnpWTk1FMXdRMlZvYVVoNmNtVlRlazVVWTNwcll6bGtJajgrSURQQQogIH0KICBdCn0=">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 로그인 화면 */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            text-align: center;
+            color: #2563eb;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 메인 앱 */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* 관리자 패널 */
+        .admin-panel {
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .admin-title {
+            color: #dc2626;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #fee2e2;
+        }
+
+        .notice-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .form-input, .form-textarea {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .priority-select {
+            display: flex;
+            gap: 10px;
+        }
+
+        .priority-option {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .priority-option.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 공지사항 목록 */
+        .notices-container {
+            padding: 20px;
+        }
+
+        .notice-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .notice-card:active {
+            transform: scale(0.98);
+        }
+
+        .notice-card.unread {
+            border-left: 4px solid #ef4444;
+        }
+
+        .notice-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-urgent {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-important {
+            background: #fed7aa;
+            color: #ea580c;
+        }
+
+        .badge-normal {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        .notice-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .notice-content {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .notice-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .notice-author {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .read-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #10b981;
+        }
+
+        /* 빈 상태 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+        }
+
+        /* 설치 안내 */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .install-content {
+            margin-bottom: 15px;
+        }
+
+        .install-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .install-desc {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .install-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .install-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .install-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .install-btn.secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* 알림 권한 요청 */
+        .notification-permission {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            color: #92400e;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 10px;
+            display: none;
+            cursor: pointer;
+        }
+
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            opacity: 0.95;
+        }
+
+        /* 반응형 */
+        @media (max-width: 640px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 로그인 화면 -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-box">
+            <h1 class="login-title">🐂 대구축산농협 공지사항</h1>
+            <input type="text" class="login-input" id="userName" placeholder="이름을 입력하세요">
+            <input type="password" class="login-input" id="userPassword" placeholder="비밀번호">
+            <button class="login-btn" onclick="login()">로그인</button>
+        </div>
+    </div>
+
+    <!-- 메인 앱 -->
+    <div class="app-container" id="appScreen">
+        <!-- 헤더 -->
+        <div class="app-header">
+            <div class="header-content">
+                <h1 class="header-title">📢 공지사항</h1>
+                <div class="user-info">
+                    <span id="currentUser">홍길동</span>
+                    <button class="logout-btn" onclick="logout()">로그아웃</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 알림 권한 요청 -->
+        <div class="notification-permission" id="notificationPrompt" onclick="requestNotificationPermission()">
+            🔔 알림을 받으려면 여기를 클릭하세요
+        </div>
+
+        <!-- 관리자 패널 -->
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <h2 class="admin-title">🔐 관리자 전용 - 새 공지 작성</h2>
+            <form class="notice-form" onsubmit="postNotice(event)">
+                <div class="form-group">
+                    <label class="form-label">제목</label>
+                    <input type="text" class="form-input" id="noticeTitle" required placeholder="공지 제목을 입력하세요">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">내용</label>
+                    <textarea class="form-textarea" id="noticeContent" required placeholder="공지 내용을 입력하세요"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">중요도</label>
+                    <div class="priority-select">
+                        <div class="priority-option" onclick="selectPriority(this, 'urgent')">🔴 긴급</div>
+                        <div class="priority-option selected" onclick="selectPriority(this, 'important')">🟡 중요</div>
+                        <div class="priority-option" onclick="selectPriority(this, 'normal')">🔵 일반</div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">공지 등록</button>
+            </form>
+        </div>
+
+        <!-- 공지사항 목록 -->
+        <div class="notices-container" id="noticesContainer">
+            <!-- 공지사항이 여기에 표시됩니다 -->
+        </div>
+    </div>
+
+    <!-- 설치 안내 -->
+    <div class="install-prompt" id="installPrompt">
+        <div class="install-content">
+            <div class="install-title">📱 앱으로 설치하기</div>
+            <div class="install-desc">홈 화면에 추가하면 더 빠르게 접속할 수 있어요!</div>
+        </div>
+        <div class="install-buttons">
+            <button class="install-btn primary" onclick="installApp()">설치하기</button>
+            <button class="install-btn secondary" onclick="hideInstallPrompt()">나중에</button>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 전역 변수
+        let currentUser = null;
+        let selectedPriority = 'important';
+        let deferredPrompt = null;
+        let notices = [];
+
+        // 초기화
+        window.addEventListener('load', () => {
+            // 로컬 스토리지에서 사용자 정보 확인
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
+            }
+
+            // 저장된 공지사항 불러오기
+            loadNotices();
+
+            // PWA 설치 프롬프트
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                showInstallPrompt();
+            });
+
+            // 서비스 워커 등록
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(() => {
+                    console.log('Service Worker registration failed');
+                });
+            }
+        });
+
+        // 로그인
+        function login() {
+            const name = document.getElementById('userName').value.trim();
+            const password = document.getElementById('userPassword').value;
+
+            if (!name) {
+                showToast('이름을 입력해주세요');
+                return;
+            }
+
+            // 관리자 체크 (비밀번호: admin)
+            const isAdmin = password === 'admin';
+
+            currentUser = {
+                name: name,
+                isAdmin: isAdmin,
+                loginTime: new Date().toISOString()
+            };
+
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showApp();
+            showToast(`환영합니다, ${name}님!`);
+        }
+
+        // 로그아웃
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appScreen').style.display = 'none';
+            document.getElementById('userName').value = '';
+            document.getElementById('userPassword').value = '';
+        }
+
+        // 앱 화면 표시
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            document.getElementById('currentUser').textContent = currentUser.name;
+
+            // 관리자 패널 표시
+            if (currentUser.isAdmin) {
+                document.getElementById('adminPanel').style.display = 'block';
+            }
+
+            // 알림 권한 확인
+            if ('Notification' in window && Notification.permission === 'default') {
+                document.getElementById('notificationPrompt').style.display = 'block';
+            }
+
+            // 공지사항 표시
+            displayNotices();
+        }
+
+        // 중요도 선택
+        function selectPriority(element, priority) {
+            document.querySelectorAll('.priority-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedPriority = priority;
+        }
+
+        // 공지 등록
+        function postNotice(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('noticeTitle').value;
+            const content = document.getElementById('noticeContent').value;
+
+            const notice = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                priority: selectedPriority,
+                author: currentUser.name,
+                timestamp: new Date().toISOString(),
+                readBy: []
+            };
+
+            notices.unshift(notice);
+            saveNotices();
+            displayNotices();
+
+            // 폼 초기화
+            document.getElementById('noticeTitle').value = '';
+            document.getElementById('noticeContent').value = '';
+
+            showToast('공지가 등록되었습니다');
+
+            // 푸시 알림 발송 (시뮬레이션)
+            sendNotification(notice);
+        }
+
+        // 공지사항 저장
+        function saveNotices() {
+            localStorage.setItem('notices', JSON.stringify(notices));
+        }
+
+        // 공지사항 불러오기
+        function loadNotices() {
+            const saved = localStorage.getItem('notices');
+            if (saved) {
+                notices = JSON.parse(saved);
+            } else {
+                // 샘플 공지사항
+                notices = [
+                    {
+                        id: 1,
+                        title: '2025년 1월 정기 회의 안내',
+                        content: '1월 15일 오후 2시 3층 회의실에서 정기 회의가 있습니다. 모든 직원분들의 참석 부탁드립니다.',
+                        priority: 'important',
+                        author: '관리자',
+                        timestamp: new Date(Date.now() - 86400000).toISOString(),
+                        readBy: []
+                    },
+                    {
+                        id: 2,
+                        title: '신년 인사',
+                        content: '2025년 을사년 새해 복 많이 받으세요! 올 한해도 건강하고 행복한 한 해 되시길 바랍니다.',
+                        priority: 'normal',
+                        author: '관리자',
+                        timestamp: new Date(Date.now() - 172800000).toISOString(),
+                        readBy: []
+                    }
+                ];
+            }
+        }
+
+        // 공지사항 표시
+        function displayNotices() {
+            const container = document.getElementById('noticesContainer');
+            
+            if (notices.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">아직 공지사항이 없습니다</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notices.map(notice => {
+                const isRead = notice.readBy.includes(currentUser.name);
+                const priorityBadge = {
+                    urgent: 'badge-urgent',
+                    important: 'badge-important',
+                    normal: 'badge-normal'
+                }[notice.priority];
+
+                const priorityText = {
+                    urgent: '긴급',
+                    important: '중요',
+                    normal: '일반'
+                }[notice.priority];
+
+                const timeAgo = getTimeAgo(new Date(notice.timestamp));
+
+                return `
+                    <div class="notice-card ${!isRead ? 'unread' : ''}" onclick="markAsRead(${notice.id})">
+                        <div class="notice-badge ${priorityBadge}">${priorityText}</div>
+                        <h3 class="notice-title">${notice.title}</h3>
+                        <p class="notice-content">${notice.content}</p>
+                        <div class="notice-meta">
+                            <div class="notice-author">
+                                <span>✍️ ${notice.author}</span>
+                                <span>• ${timeAgo}</span>
+                            </div>
+                            ${isRead ? '<div class="read-status">✓ 읽음</div>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 읽음 표시
+        function markAsRead(noticeId) {
+            const notice = notices.find(n => n.id === noticeId);
+            if (notice && !notice.readBy.includes(currentUser.name)) {
+                notice.readBy.push(currentUser.name);
+                saveNotices();
+                displayNotices();
+            }
+        }
+
+        // 시간 표시
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            if (seconds < 60) return '방금 전';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}분 전`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)}시간 전`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)}일 전`;
+            
+            return date.toLocaleDateString();
+        }
+
+        // 알림 권한 요청
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showToast('알림이 활성화되었습니다');
+                        document.getElementById('notificationPrompt').style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        // 푸시 알림 발송
+        function sendNotification(notice) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const notification = new Notification('새 공지사항', {
+                    body: notice.title,
+                    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+                    badge: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+                    vibrate: [200, 100, 200]
+                });
+
+                notification.onclick = function() {
+                    window.focus();
+                    notification.close();
+                };
+            }
+        }
+
+        // PWA 설치
+        function showInstallPrompt() {
+            setTimeout(() => {
+                document.getElementById('installPrompt').style.display = 'block';
+            }, 3000);
+        }
+
+        function hideInstallPrompt() {
+            document.getElementById('installPrompt').style.display = 'none';
+        }
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showToast('앱이 설치되었습니다!');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+            hideInstallPrompt();
+        }
+
+        // 토스트 메시지
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // iOS 설치 안내
+        if (navigator.standalone === false && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            setTimeout(() => {
+                alert('📱 iOS 설치 방법\n\n1. Safari 하단 공유 버튼 탭\n2. "홈 화면에 추가" 선택\n3. "추가" 탭');
+            }, 5000);
+        }
+    </script>
+
+    <!-- 서비스 워커 (인라인) -->
+    <script id="sw-script">
+        const swCode = `
+self.addEventListener('install', event => {
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+    event.waitUntil(clients.claim());
+});
+
+self.addEventListener('push', event => {
+    const options = {
+        body: event.data ? event.data.text() : '새로운 공지사항이 있습니다',
+        icon: '/icon.png',
+        badge: '/badge.png',
+        vibrate: [200, 100, 200]
+    };
+    
+    event.waitUntil(
+        self.registration.showNotification('대구축산농협 공지', options)
+    );
+});
+        `;
+        
+        // 서비스 워커 동적 등록
+        if ('serviceWorker' in navigator) {
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).catch(() => {});
+        }
+    </script>
+</body>
+</html>
